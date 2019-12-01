@@ -7,10 +7,12 @@ import { TaskService } from '../task/task.service';
 import { OutboxPublisher } from './outbox/outbox.publisher';
 import { NsConfiguration } from '../config/configuration';
 import { ConfirmConsumer } from './confirm/confirm.consumer';
+import { EnvService } from '../config/env.service';
 
 @Injectable()
 export class ConsumerLauncher {
   constructor(private readonly configService: ConfigService,
+              private readonly envService: EnvService,
               private readonly outboxPublisher: OutboxPublisher,
               private readonly taskRepository: TaskRepository,
               private readonly queueRepository: QueueRepository,
@@ -32,8 +34,8 @@ export class ConsumerLauncher {
 
   private async runTaskService(ns: NsConfiguration): Promise<TaskService> {
     await this.createQueuesIfNotExists(ns);
-    return new TaskService(this.outboxPublisher, this.taskRepository,
-      this.queueRepository, ns);
+    return new TaskService(this.envService, this.outboxPublisher,
+      this.taskRepository, this.queueRepository, ns);
   }
 
   private async runInboxConsumer(ns: NsConfiguration, taskService: TaskService): Promise<any> {
