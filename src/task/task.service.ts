@@ -34,7 +34,7 @@ export class TaskService {
   }
 
   async nextTick(): Promise<void> {
-    if (this.inProcessTasks > this.workers * 1) {
+    if (this.inProcessTasks > this.workers * 3) {
       return;
     }
     const queues = this.queueRepository.getQueues(this.ns.inbox);
