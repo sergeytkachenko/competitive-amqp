@@ -2,10 +2,10 @@ ns:
   - inbox: inbox1
     outbox: outbox1
     confirm: confirm1
-    inboxPrefetch: 1
+    inboxPrefetch: 250
     confirmPrefetch: 1
   - inbox: inbox2
     outbox: outbox2
     confirm: confirm2
-    inboxPrefetch: 1
+    inboxPrefetch: 250
     confirmPrefetch: 1

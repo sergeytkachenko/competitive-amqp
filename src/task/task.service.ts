@@ -58,6 +58,6 @@ export class TaskService {
     } as OutboxMessage;
     this.outboxPublisher.send(this.ns.outbox, outboxMsq);
     this.inProcessTasks++;
-    console.log(outboxMsq);
+    console.log('send to outbox: ', outboxMsq);
   }
 }
