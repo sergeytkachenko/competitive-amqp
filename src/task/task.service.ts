@@ -80,7 +80,7 @@ export class TaskService {
     } as OutboxMessage;
     this.outboxPublisher.send(this.ns.outbox, outboxMsq);
     this.inProcessTasks++;
-    console.log('send to outbox: ', outboxMsq);
+    // console.log('send to outbox: ', outboxMsq);
   }
 
   async confirm(msg: ConfirmMessage): Promise<void> {
