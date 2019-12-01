@@ -11,7 +11,7 @@ import { ConfigService } from './config.service';
     {
       provide: ConfigService,
       useClass: ConfigService,
-    }
+    },
   ],
   exports: [ConfigService, EnvService ],
 })
