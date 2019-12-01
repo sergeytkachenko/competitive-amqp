@@ -6,6 +6,7 @@ import { QueueRepository } from '../task/queue.repository';
 import { TaskService } from '../task/task.service';
 import { OutboxPublisher } from './outbox/outbox.publisher';
 import { NsConfiguration } from '../config/configuration';
+import { ConfirmConsumer } from './confirm/confirm.consumer';
 
 @Injectable()
 export class ConsumerLauncher {
@@ -20,17 +21,32 @@ export class ConsumerLauncher {
   runConsumers(): void {
     const namespaces = this.configService.getNamespaces();
     const fn = [];
-    namespaces.forEach(ns => fn.push(this.runInboxConsumer(ns)));
+    namespaces.forEach(ns => fn.push(this.createConsumers(ns)));
     Promise.all(fn);
   }
 
-  private async runInboxConsumer(ns: NsConfiguration): Promise<any> {
+  private async runConfirmConsumer(ns: NsConfiguration, taskService: TaskService): Promise<any> {
+    const inboxConsumer = new ConfirmConsumer(this.amqpConnectionString,
+      ns.confirm, ns.confirmPrefetch, taskService);
+  }
+
+  private async runTaskService(ns: NsConfiguration): Promise<TaskService> {
+    await this.createQueuesIfNotExists(ns);
+    return new TaskService(this.outboxPublisher, this.taskRepository,
+      this.queueRepository, ns);
+  }
+
+  private async runInboxConsumer(ns: NsConfiguration, taskService: TaskService): Promise<any> {
     const namespace = ns.inbox;
-    const taskService = new TaskService(this.outboxPublisher,
-      this.taskRepository, this.queueRepository, ns);
     await this.createQueuesIfNotExists(ns);
     const inboxConsumer = new InboxConsumer(this.amqpConnectionString, namespace,
       ns.inbox, ns.inboxPrefetch, taskService);
+  }
+
+  private async createConsumers(ns: NsConfiguration): Promise<any> {
+    const taskService = await this.runTaskService(ns);
+    await this.runInboxConsumer(ns, taskService);
+    await this.runConfirmConsumer(ns, taskService);
   }
 
   private async createQueuesIfNotExists(ns: NsConfiguration): Promise<void> {

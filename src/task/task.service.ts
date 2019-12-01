@@ -4,6 +4,7 @@ import { QueueRepository } from './queue.repository';
 import { InboxMessage } from '../amqp/dto/inbox.message';
 import { OutboxPublisher } from '../amqp/outbox/outbox.publisher';
 import { NsConfiguration } from '../config/configuration';
+import { ConfirmMessage } from '../amqp/dto/confirm.message';
 
 export class TaskService {
 
@@ -23,13 +24,17 @@ export class TaskService {
     setInterval(() => this.nextTick(), 15);
   }
 
+  async confirm(msg: ConfirmMessage): Promise<void> {
+    this.inProcessTasks--;
+  }
+
   async push(task: InboxMessage): Promise<any> {
     await this.taskRepository.addTask(this.ns.inbox, task);
     await this.queueRepository.addQueueNotExists(this.ns.inbox, task.queue);
   }
 
   async nextTick(): Promise<void> {
-    if (this.inProcessTasks > this.workers * 5) {
+    if (this.inProcessTasks > this.workers * 1) {
       return;
     }
     const queues = this.queueRepository.getQueues(this.ns.inbox);
