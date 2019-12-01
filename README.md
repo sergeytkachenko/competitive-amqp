@@ -29,3 +29,7 @@ ns:
     inboxPrefetch: 250
     confirmPrefetch: 1
 ```
+
+#### architecture
+
+![alt text](architecture.png)
