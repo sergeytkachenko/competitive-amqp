@@ -44,6 +44,7 @@ export class TaskService {
             const parsedData = JSON.parse(rawData);
             const consumers = parsedData.filter(c => c.queue.name === this.ns.outbox);
             this.outboxConsumerCount = consumers.length || this.outboxConsumerCount;
+            console.log(`actualize outbox consumers count: ${this.outboxConsumerCount}`);
           } catch (e) {
             console.error(e.message);
           }
