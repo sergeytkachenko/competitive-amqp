@@ -78,7 +78,10 @@ export class TaskService {
       queue,
       payload: task.payload,
     } as OutboxMessage;
-    this.outboxPublisher.send(this.ns.outbox, outboxMsq);
+    const success = await this.outboxPublisher.send(this.ns.outbox, outboxMsq);
+    if (!success) {
+      // todo: reject task to redis
+    }
     this.inProcessTasks++;
     // console.log('send to outbox: ', outboxMsq);
   }
