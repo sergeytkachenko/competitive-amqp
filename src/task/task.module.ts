@@ -5,6 +5,8 @@ import { QueueRepository } from './queue.repository';
 import { RedisClient } from 'redis';
 import { ConfigService } from '../config/config.service';
 import { EnvService } from '../config/env.service';
+import { RedisClientReader } from './RedisClientReader';
+import { RedisClientWriter } from './RedisClientWriter';
 
 @Module({
   providers: [
@@ -17,7 +19,15 @@ import { EnvService } from '../config/env.service';
       useClass: QueueRepository,
     },
     {
-      provide: RedisClient,
+      provide: RedisClientReader,
+      useFactory: (envService: EnvService) => {
+        const redis = require('redis');
+        return redis.createClient(envService.get('REDIS_CONNECT_STRING'));
+      },
+      inject: [EnvService],
+    },
+    {
+      provide: RedisClientWriter,
       useFactory: (envService: EnvService) => {
         const redis = require('redis');
         return redis.createClient(envService.get('REDIS_CONNECT_STRING'));

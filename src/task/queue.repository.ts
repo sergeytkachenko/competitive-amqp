@@ -1,5 +1,7 @@
 import { RedisClient } from 'redis';
 import { Inject, Injectable } from '@nestjs/common';
+import { RedisClientReader } from './RedisClientReader';
+import { RedisClientWriter } from './RedisClientWriter';
 
 @Injectable()
 export class QueueRepository {
@@ -7,7 +9,8 @@ export class QueueRepository {
   private readonly namespaces: string[];
   private queues: any = {};
 
-  constructor(private readonly redisClient: RedisClient,
+  constructor(private readonly redisClientReader: RedisClientReader,
+              private readonly redisClientWriter: RedisClientWriter,
               @Inject('NAMESPACES') namespaces: string[]) {
     this.namespaces = namespaces;
     this.init();
@@ -26,7 +29,7 @@ export class QueueRepository {
 
   private async fetchQueueList(ns: string) {
     return new Promise(resolve => {
-      this.redisClient.SMEMBERS(`${ns}_queue`, (err, list) => {
+      this.redisClientReader.SMEMBERS(`${ns}_queue`, (err, list) => {
         this.queues[ns] = list;
         resolve();
       });
@@ -45,7 +48,7 @@ export class QueueRepository {
     return new Promise(resolve => {
       this.queues[ns] = this.queues[ns] || [];
       this.queues[ns].push(queue);
-      this.redisClient.SADD(`${ns}_queue`, queue, () => resolve());
+      this.redisClientWriter.SADD(`${ns}_queue`, queue, () => resolve());
     });
   }
 

@@ -24,7 +24,7 @@ export class TaskService {
   }
 
   private init(): void {
-    setInterval(() => this.nextTick(), 15);
+    setInterval(() => this.nextTick(), 1);
     setInterval(() => this.actualizeOutboxConsumerCount(), 60 * 1000);
     this.actualizeOutboxConsumerCount();
   }
@@ -56,7 +56,7 @@ export class TaskService {
   }
 
   private async nextTick(): Promise<void> {
-    if (this.inProcessTasks > this.outboxConsumerCount * 3) {
+    if (this.inProcessTasks > this.outboxConsumerCount * 10) {
       return;
     }
     const queues = this.queueRepository.getQueues(this.ns.inbox);

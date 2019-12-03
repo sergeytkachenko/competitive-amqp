@@ -1,11 +1,6 @@
 ns:
-  - inbox: inbox1
-    outbox: outbox1
-    confirm: confirm1
-    inboxPrefetch: 250
-    confirmPrefetch: 1
-  - inbox: inbox2
-    outbox: outbox2
-    confirm: confirm2
-    inboxPrefetch: 250
-    confirmPrefetch: 1
+  - inbox: inbox_stkachenko
+    outbox: outbox_stkachenko
+    confirm: confirm_stkachenko
+    inboxPrefetch: 1000
+    confirmPrefetch: 250
