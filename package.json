@@ -22,7 +22,7 @@
   "dependencies": {
     "@nestjs/common": "^6.7.2",
     "@nestjs/core": "^6.7.2",
-    "@nestjs/platform-express": "^6.7.2",
+    "@nestjs/platform-express": "^9.2.1",
     "@types/redis": "^2.8.14",
     "amqplib": "^0.5.5",
     "dotenv": "^8.2.0",
